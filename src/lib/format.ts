@@ -8,16 +8,6 @@ export function maskName(name: string): string {
   return `${n[0]}${"*".repeat(n.length - 2)}${n[n.length - 1]}`;
 }
 
-// 연락처 마스킹(관리자 화면 보조용): 010-1234-5678 -> 010-****-5678
-export function maskPhone(phone?: string): string {
-  if (!phone) return "-";
-  const digits = phone.replace(/[^0-9]/g, "");
-  if (digits.length < 7) return phone;
-  const head = digits.slice(0, 3);
-  const tail = digits.slice(-4);
-  return `${head}-****-${tail}`;
-}
-
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 // "2027-05-22" -> "5월 22일"

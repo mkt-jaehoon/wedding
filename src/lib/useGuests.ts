@@ -52,7 +52,6 @@ export function useAdminGuests() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
     guestStore
       .listAdmin()
       .then((g) => active && (setGuests(g), setError(null), setLoading(false)))

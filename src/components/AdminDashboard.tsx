@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, RouteArrow, TrainBadge } from "./ui";
 import { useAdminGuests } from "@/lib/useGuests";
 import { usingSupabase } from "@/lib/store";
@@ -324,9 +324,12 @@ function MemoCell({
   onSave: (memo: string) => void;
 }) {
   const [text, setText] = useState(value);
-  useEffect(() => {
+  // 외부 value가 바뀌면(저장→새로고침) 렌더 중 동기화 (effect 불필요)
+  const [lastValue, setLastValue] = useState(value);
+  if (value !== lastValue) {
+    setLastValue(value);
     setText(value);
-  }, [value]);
+  }
   return (
     <input
       value={text}

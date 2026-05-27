@@ -1,4 +1,4 @@
-import type { AdminPatch, Guest, GuestInput, PublicGuest } from "../types";
+import type { AdminPatch, Guest, GuestInput } from "../types";
 import { maskName } from "../format";
 import { getSupabase } from "../supabase/client";
 import { toMyBooking, toPublicGuest } from "../supabase/mappers";
