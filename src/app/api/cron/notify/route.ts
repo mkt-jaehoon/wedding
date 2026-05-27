@@ -47,6 +47,13 @@ export async function GET(req: Request) {
   }
 
   const { subject, text } = buildEmail(offset, summaryText);
-  await sendMail(subject, text);
+  try {
+    await sendMail(subject, text);
+  } catch (e) {
+    return NextResponse.json(
+      { error: "메일 발송 실패", detail: (e as Error).message },
+      { status: 502 },
+    );
+  }
   return NextResponse.json({ sent: true, today, offset });
 }

@@ -14,11 +14,14 @@ export async function sendMail(subject: string, text: string): Promise<void> {
   if (!user || !pass) {
     throw new Error("SMTP 자격증명 미설정(SMTP_USER/SMTP_PASS)");
   }
+  // 발신 주소(전체 이메일)와 로그인 ID를 분리 가능하게.
+  const from =
+    process.env.SMTP_FROM || (user.includes("@") ? user : `${user}@naver.com`);
   const transport = nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
     auth: { user, pass },
   });
-  await transport.sendMail({ from: user, to, subject, text });
+  await transport.sendMail({ from, to, subject, text });
 }
