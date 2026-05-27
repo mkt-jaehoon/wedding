@@ -43,6 +43,10 @@ yarn-error.log*
 # local-only reference docs (third-party skill guides)
 /docs/skill-reference/
 
+# booking outputs (명단/예약결과 — 실명 포함)
+/booking/out/
+__pycache__/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

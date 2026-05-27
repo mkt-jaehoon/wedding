@@ -1,0 +1,5 @@
+# 예매 준비 도구 의존성. plan/writeback은 표준 라이브러리만으로 동작하며,
+# 실제 열차 조회/예약(search/reserve) 시에만 아래 패키지가 필요하다.
+SRTrain
+korail2
+pycryptodome
