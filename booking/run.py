@@ -71,22 +71,69 @@ def cmd_search(which: str) -> None:
             print(f"[{it['from']}→{it['to']} {it['date']}] 조회 실패: {e}")
 
 
+def _digits(s: str) -> str:
+    return "".join(ch for ch in str(s) if ch.isdigit())
+
+
+def _pick_train(adapter, trains, prefer_time: str):
+    """prefer_time(HHMMSS) 이후 가장 이른 열차. 못 찾으면 첫 열차."""
+    pt = _digits(prefer_time)[:4]
+    for t in trains:
+        dt = _digits(adapter.normalize_train(t).get("dep_time", ""))[:4]
+        if dt and dt >= pt:
+            return t
+    return trains[0] if trains else None
+
+
 def cmd_reserve(which: str) -> None:
     if os.environ.get("RESERVE_CONFIRM") != "YES":
         raise SystemExit(
             "안전장치: 실제 예약은 RESERVE_CONFIRM=YES 환경변수가 있어야 실행됩니다."
         )
     adapter = _adapter(which)
-    results = []
+    rows: list[dict] = []
     for it in [x for x in _load_plan() if x["train_type"] == which.upper()]:
         date = it["date"].replace("-", "")
+        prefer_times = it.get("prefer_times") or [it["search_time"]]
+        seat_class = it.get("seat_class", "general")
+        label = f"{it['from']}→{it['to']} {it['date']} {it['time_band_label']}"
         try:
-            res = adapter.reserve(it["from"], it["to"], date, it["search_time"])
-            print(f"예약 성공 [{it['from']}→{it['to']} {it['date']}]: {res}")
-            results.append({"group": it, "reservation": str(res)})
+            trains = adapter.search(it["from"], it["to"], date, it["search_time"])
         except Exception as e:  # noqa: BLE001
-            print(f"예약 실패 [{it['from']}→{it['to']} {it['date']}]: {e}")
-    _save(f"reserve_{which.lower()}.json", results)
+            print(f"[{label}] 조회 실패: {e}")
+            continue
+        chosen = None
+        for pt in prefer_times:
+            chosen = _pick_train(adapter, trains, pt)
+            if chosen:
+                break
+        if not chosen:
+            print(f"[{label}] 후보 열차 없음")
+            continue
+        tinfo = adapter.normalize_train(chosen)
+        print(f"[{label}] 대상 열차 {tinfo}")
+        # 하객(파티)별 개별 예약 — 각자 결제 주체가 다르므로 분리 예약
+        for g in it["guests"]:
+            try:
+                res = adapter.reserve_train(chosen, int(g.get("party_size") or 1), seat_class)
+                rinfo = adapter.normalize_reservation(res)
+                rows.append(
+                    {
+                        "id": g["id"],
+                        "name": g.get("name"),
+                        "leg": g.get("leg", "outbound"),
+                        "train_no": tinfo.get("train_no"),
+                        "exact_time": tinfo.get("dep_time"),
+                        "reservation_id": rinfo.get("reservation_id"),
+                        "buy_deadline": rinfo.get("buy_deadline"),
+                        "status": "BOOKED",
+                    }
+                )
+                print(f"    예약 OK {g.get('name')} x{g.get('party_size')} -> {rinfo.get('reservation_id')}")
+            except Exception as e:  # noqa: BLE001
+                print(f"    예약 실패 {g.get('name')}: {e}")
+    out = _save(f"result_{which.lower()}.json", rows)
+    print(f"\n예약 성공 {len(rows)}건 저장: {out}\n  → 반영: python3 -m booking.run writeback {out}")
 
 
 def cmd_writeback(path: str) -> None:

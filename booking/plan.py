@@ -43,6 +43,7 @@ def build_plan(guests: list[dict]) -> list[dict]:
             key = (
                 f["train_type"], leg, f["from"], f["to"], f["date"], f["time_band"],
             )
+            search_time = TIME_BAND_START.get(f["time_band"], "060000")
             grp = groups.setdefault(
                 key,
                 {
@@ -54,7 +55,10 @@ def build_plan(guests: list[dict]) -> list[dict]:
                     "date": f["date"],
                     "time_band": f["time_band"],
                     "time_band_label": TIME_BAND_LABEL.get(f["time_band"], f["time_band"]),
-                    "search_time": TIME_BAND_START.get(f["time_band"], "060000"),
+                    "search_time": search_time,
+                    # 예약 의도(검토 후 직접 수정): 1·2지망 출발시각(HHMMSS, 우선순위순), 좌석등급
+                    "prefer_times": [search_time],
+                    "seat_class": "general",  # general | special
                     "seats": 0,
                     "guests": [],
                 },
