@@ -78,8 +78,17 @@ export function routeCounts(guests: Guest[]): RouteCount[] {
   });
 }
 
+export interface Summary {
+  totalGroups: number;
+  totalPeople: number;
+  downSRT: number;
+  downKTX: number;
+  returnPeople: number;
+  booked: number;
+}
+
 // 전체 요약
-export function summarize(guests: Guest[]) {
+export function summarize(guests: Guest[]): Summary {
   const active = guests.filter((g) => g.status !== "CANCELLED");
   const totalGroups = active.length;
   const totalPeople = active.reduce((s, g) => s + g.partySize, 0);

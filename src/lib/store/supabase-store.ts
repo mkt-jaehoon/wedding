@@ -1,7 +1,12 @@
 import type { AdminPatch, Guest, GuestInput } from "../types";
-import { maskName } from "../format";
 import { getSupabase } from "../supabase/client";
-import { toMyBooking, toPublicGuest } from "../supabase/mappers";
+import {
+  toMyBooking,
+  toPublicGuest,
+  type MyBookingRow,
+  type PublicGuestRow,
+} from "../supabase/mappers";
+import { normalizeGuestInput } from "./normalize";
 import { UnauthorizedError, type GuestStore } from "./types";
 
 // 공개/신청은 클라이언트에서 anon 키로 직접(공개 데이터). 관리자는 서버 API 경유(쿠키 세션).
@@ -12,33 +17,33 @@ export const supabaseGuestStore: GuestStore = {
       .select("*")
       .order("outbound_date", { ascending: true });
     if (error) throw new Error(error.message);
-    return (data ?? []).map(toPublicGuest);
+    return ((data ?? []) as PublicGuestRow[]).map(toPublicGuest);
   },
 
   async create(input: GuestInput) {
-    const o = input.outbound;
-    const i = input.inbound;
+    const n = normalizeGuestInput(input);
+    const i = n.inbound;
     const row = {
-      real_name: input.name.trim(),
-      display_name: maskName(input.name),
-      phone: input.phone?.replace(/[^0-9]/g, "") || null,
-      group_name: input.groupName?.trim() || null,
-      party_size: input.partySize,
-      outbound_train_type: o.trainType,
-      outbound_from: o.from,
-      outbound_to: o.to,
-      outbound_date: o.date,
-      outbound_time_band: o.timeBand,
-      has_return: input.hasReturn,
-      inbound_train_type: input.hasReturn && i ? i.trainType : null,
-      inbound_from: input.hasReturn && i ? i.from : null,
-      inbound_to: input.hasReturn && i ? i.to : null,
-      inbound_date: input.hasReturn && i ? i.date : null,
-      inbound_time_band: input.hasReturn && i ? i.timeBand : null,
+      real_name: n.name,
+      display_name: n.displayName,
+      phone: n.phone ?? null,
+      group_name: n.groupName ?? null,
+      party_size: n.partySize,
+      outbound_train_type: n.outbound.trainType,
+      outbound_from: n.outbound.from,
+      outbound_to: n.outbound.to,
+      outbound_date: n.outbound.date,
+      outbound_time_band: n.outbound.timeBand,
+      has_return: n.hasReturn,
+      inbound_train_type: i ? i.trainType : null,
+      inbound_from: i ? i.from : null,
+      inbound_to: i ? i.to : null,
+      inbound_date: i ? i.date : null,
+      inbound_time_band: i ? i.timeBand : null,
       status: "REQUESTED",
-      admin_memo: input.memo?.trim() || null,
-      public_visible: input.publicVisible,
-      privacy_agreed: input.privacyAgreed,
+      admin_memo: n.memo ?? null,
+      public_visible: n.publicVisible,
+      privacy_agreed: n.privacyAgreed,
     };
     // .select() 미사용 => RETURNING 없음 => 민감 데이터 회신 없음
     const { error } = await getSupabase().from("guests").insert(row);
@@ -51,7 +56,7 @@ export const supabaseGuestStore: GuestStore = {
       p_phone: phone,
     });
     if (error) throw new Error(error.message);
-    return ((data as Record<string, unknown>[]) ?? []).map(toMyBooking);
+    return ((data ?? []) as MyBookingRow[]).map(toMyBooking);
   },
 
   async adminLogin(passcode: string) {

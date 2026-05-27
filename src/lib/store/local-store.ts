@@ -1,8 +1,8 @@
 import type { AdminPatch, Guest, GuestInput, PublicGuest } from "../types";
-import { maskName } from "../format";
 import { coarsenStatus } from "../labels";
 import { seedGuests } from "../seed";
 import { checkPasscode, isDemoAuthed, setDemoAuthed } from "../auth";
+import { normalizeGuestInput } from "./normalize";
 import { UnauthorizedError, type GuestStore } from "./types";
 
 const KEY = "wedding.guests.v1";
@@ -69,20 +69,21 @@ export const demoGuestStore: GuestStore = {
 
   async create(input: GuestInput) {
     const now = new Date().toISOString();
+    const n = normalizeGuestInput(input);
     const guest: Guest = {
       id: newId(),
-      name: input.name.trim(),
-      displayName: maskName(input.name),
-      phone: input.phone?.replace(/[^0-9]/g, "") || undefined,
-      groupName: input.groupName?.trim() || undefined,
-      partySize: input.partySize,
-      outbound: input.outbound,
-      hasReturn: input.hasReturn,
-      inbound: input.hasReturn ? input.inbound : undefined,
+      name: n.name,
+      displayName: n.displayName,
+      phone: n.phone,
+      groupName: n.groupName,
+      partySize: n.partySize,
+      outbound: n.outbound,
+      hasReturn: n.hasReturn,
+      inbound: n.inbound,
       status: "REQUESTED",
-      memo: input.memo?.trim() || undefined,
-      publicVisible: input.publicVisible,
-      privacyAgreed: input.privacyAgreed,
+      memo: n.memo,
+      publicVisible: n.publicVisible,
+      privacyAgreed: n.privacyAgreed,
       createdAt: now,
       updatedAt: now,
     };

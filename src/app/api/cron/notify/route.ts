@@ -3,7 +3,7 @@ import { buildEmail, dueOffset, kstToday } from "@/lib/notify";
 import { mailerConfigured, sendMail } from "@/lib/mailer";
 import { serverSupabase } from "@/lib/supabase/server";
 import { adminPasscode } from "@/lib/admin-session";
-import { toGuest } from "@/lib/supabase/mappers";
+import { toGuest, type GuestRow } from "@/lib/supabase/mappers";
 import { routeCounts, summarize } from "@/lib/aggregate";
 
 // Vercel Cron이 매일 호출. CRON_SECRET 설정 시 Authorization 헤더로 보호됨.
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
     const { data } = await serverSupabase().rpc("admin_list_guests", {
       p_passcode: adminPasscode(),
     });
-    const guests = ((data as Record<string, unknown>[]) ?? []).map(toGuest);
+    const guests = ((data ?? []) as GuestRow[]).map(toGuest);
     const s = summarize(guests);
     const rc = routeCounts(guests);
     summaryText =
