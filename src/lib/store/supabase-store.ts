@@ -21,7 +21,7 @@ export const supabaseGuestStore: GuestStore = {
     const row = {
       real_name: input.name.trim(),
       display_name: maskName(input.name),
-      phone: input.phone?.trim() || null,
+      phone: input.phone?.replace(/[^0-9]/g, "") || null,
       group_name: input.groupName?.trim() || null,
       party_size: input.partySize,
       outbound_train_type: o.trainType,

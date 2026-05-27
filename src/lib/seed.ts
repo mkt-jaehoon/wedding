@@ -19,7 +19,7 @@ interface SeedSpec {
 const SPECS: SeedSpec[] = [
   {
     name: "김재훈",
-    phone: "010-2345-6789",
+    phone: "01023456789",
     groupName: "신랑 대학동기",
     partySize: 2,
     trainType: "SRT",
@@ -31,7 +31,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "이서연",
-    phone: "010-3456-7890",
+    phone: "01034567890",
     groupName: "신부 직장동료",
     partySize: 1,
     trainType: "KTX",
@@ -42,7 +42,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "박준호",
-    phone: "010-4567-8901",
+    phone: "01045678901",
     groupName: "신랑 친구",
     partySize: 3,
     trainType: "SRT",
@@ -54,7 +54,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "최민지",
-    phone: "010-5678-9012",
+    phone: "01056789012",
     groupName: "신부 친구",
     partySize: 2,
     trainType: "KTX",
@@ -64,7 +64,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "정우성",
-    phone: "010-6789-0123",
+    phone: "01067890123",
     groupName: "신랑 회사 선배",
     partySize: 1,
     trainType: "SRT",
@@ -75,7 +75,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "한가영",
-    phone: "010-7890-1234",
+    phone: "01078901234",
     groupName: "신부 가족",
     partySize: 4,
     trainType: "KTX",
@@ -87,7 +87,7 @@ const SPECS: SeedSpec[] = [
   },
   {
     name: "오현석",
-    phone: "010-8901-2345",
+    phone: "01089012345",
     groupName: "신랑 친구",
     partySize: 1,
     trainType: "SRT",

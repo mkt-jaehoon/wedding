@@ -73,7 +73,7 @@ export const demoGuestStore: GuestStore = {
       id: newId(),
       name: input.name.trim(),
       displayName: maskName(input.name),
-      phone: input.phone?.trim() || undefined,
+      phone: input.phone?.replace(/[^0-9]/g, "") || undefined,
       groupName: input.groupName?.trim() || undefined,
       partySize: input.partySize,
       outbound: input.outbound,
