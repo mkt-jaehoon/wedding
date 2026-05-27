@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui";
 import { VenueMap } from "@/components/VenueMap";
+import { TravelInfo } from "@/components/TravelInfo";
 import {
   BOOKING_OPEN,
   WEDDING,
@@ -101,6 +102,9 @@ export default function Home() {
 
       {/* 예식장 지도 */}
       <VenueMap />
+
+      {/* 이동 안내 */}
+      <TravelInfo />
     </div>
   );
 }

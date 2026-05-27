@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, RouteArrow, StatusBadge, TrainBadge } from "@/components/ui";
+import { TravelInfo } from "@/components/TravelInfo";
 import { guestStore } from "@/lib/store";
 import { TIME_BAND_META } from "@/lib/labels";
 import { formatDateWithDow } from "@/lib/format";
@@ -77,6 +78,8 @@ export default function MyPage() {
       <p className="mt-6 text-center text-xs text-zinc-400">
         본인 확인된 정보만 조회되며, 다른 하객 정보는 표시되지 않습니다.
       </p>
+
+      <TravelInfo />
     </div>
   );
 }

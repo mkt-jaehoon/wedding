@@ -14,6 +14,25 @@ export const WEDDING = {
   lng: 129.05947,
 } as const;
 
+// 이동 안내 (대략적 정보 — 실제 열차/교통 상황에 따라 달라질 수 있음)
+export const TRAVEL = {
+  trainDuration: "약 2시간 40분", // 서울역·수서 → 부산
+  fromBusanStation: [
+    {
+      mode: "택시 · 자동차",
+      detail: "부산역 → 예식장 직행",
+      time: "약 30분",
+      cost: "택시비 약 13,000원",
+    },
+    {
+      mode: "지하철",
+      detail: "부산역 → 연산역 하차 → 도보 (다소 번거로움)",
+      time: "",
+      cost: "",
+    },
+  ],
+} as const;
+
 // 핵심 예매 오픈일: 운행일(예식일) 1개월 전 07:00
 // KTX·SRT 모두 일반 승차권은 출발 1개월 전 07:00 오픈 (정책 변경 가능성은 직전 재확인)
 export const BOOKING_OPEN = {
