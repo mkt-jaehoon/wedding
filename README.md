@@ -41,11 +41,23 @@ pnpm dev                     # http://localhost:3000
 
 ## 환경변수
 
-| 변수 | 용도 |
-|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon(publishable) 키 |
-| `NEXT_PUBLIC_ADMIN_PASSCODE` | `/admin` 접근 코드(데모 검증/UX용) |
+| 변수 | 용도 | 노출 |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL | 클라이언트 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon(publishable) 키 | 클라이언트 |
+| `ADMIN_PASSCODE` | 관리자 비밀번호(DB `app_config`와 동일) | 서버 전용 |
+| `ADMIN_SESSION_SECRET` | 관리자 세션 쿠키 서명 시크릿 | 서버 전용 |
+| `SMTP_HOST`/`SMTP_PORT` | 네이버 SMTP(`smtp.naver.com`/`465`) | 서버 전용 |
+| `SMTP_USER`/`SMTP_PASS` | 발신 계정/**앱 비밀번호** | 서버 전용 |
+| `NOTIFY_TO` | 알림 수신 이메일 | 서버 전용 |
+| `CRON_SECRET` | Vercel Cron 보호 | 서버 전용 |
+
+> 관리자 인증은 **서버 httpOnly 쿠키 세션**(`/api/admin/*`)으로, 비밀번호는 서버에만 존재하고 클라이언트 번들에 노출되지 않는다.
+
+### 예매 오픈 알림 메일
+- `vercel.json`의 Cron이 매일 `/api/cron/notify`를 호출 → 예매 오픈(2027-04-22) **D-30/7/1/당일**에 `NOTIFY_TO`로 메일 발송.
+- 네이버 SMTP는 **2단계 인증 + 애플리케이션 비밀번호** 필요. `SMTP_PASS`에 로그인 비번이 아닌 앱 비밀번호를 넣는다.
+- 동작 테스트: `GET /api/cron/notify?force=1` (`Authorization: Bearer <CRON_SECRET>`).
 
 - **셋 다 없으면** 데모(localStorage) 모드로 동작 — 브라우저별 분리, 시드 데이터 표시.
 - 관리자 비밀번호의 실제 검증값은 DB `app_config.admin_passcode` 다. 변경:

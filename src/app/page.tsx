@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui";
+import { VenueMap } from "@/components/VenueMap";
 import {
   BOOKING_OPEN,
   WEDDING,
@@ -95,6 +96,9 @@ export default function Home() {
           연락처 등 상세 개인정보는 공개되지 않습니다.
         </p>
       </Card>
+
+      {/* 예식장 지도 */}
+      <VenueMap />
     </div>
   );
 }
