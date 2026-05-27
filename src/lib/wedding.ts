@@ -4,11 +4,12 @@ import type { TrainType } from "./types";
 export const WEDDING = {
   dateTime: "2027-05-22T13:30:00+09:00",
   dateLabel: "2027년 5월 22일 (토) 오후 1시 30분",
-  venue: "부산 아시아드 주경기장",
+  venue: "아시아드시티웨딩홀",
+  hall: "1층 마리아주홀",
   venueDetail: "부산광역시 연제구 월드컵대로 344",
   // 지도/길찾기 확장용 좌표
-  lat: 35.1909,
-  lng: 129.0589,
+  lat: 35.19057,
+  lng: 129.05947,
 } as const;
 
 // 핵심 예매 오픈일: 운행일(예식일) 1개월 전 07:00

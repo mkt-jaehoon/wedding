@@ -58,7 +58,9 @@ export default function Home() {
           <p className="mt-3 text-lg font-bold text-zinc-900">
             {WEDDING.dateLabel}
           </p>
-          <p className="mt-1 text-sm text-zinc-600">{WEDDING.venue}</p>
+          <p className="mt-1 text-sm text-zinc-600">
+            {WEDDING.venue} · {WEDDING.hall}
+          </p>
           <p className="text-sm text-zinc-400">{WEDDING.venueDetail}</p>
         </Card>
 

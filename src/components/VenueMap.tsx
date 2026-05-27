@@ -2,7 +2,7 @@ import { Card } from "./ui";
 import { WEDDING } from "@/lib/wedding";
 
 export function VenueMap() {
-  const { lat, lng, venue, venueDetail } = WEDDING;
+  const { lat, lng, venue, hall, venueDetail } = WEDDING;
   const q = encodeURIComponent(venue);
   const embed = `https://www.google.com/maps?q=${lat},${lng}&z=16&hl=ko&output=embed`;
   const links = [
@@ -27,7 +27,9 @@ export function VenueMap() {
     <Card className="mt-4 overflow-hidden">
       <div className="border-b border-zinc-100 p-5">
         <h2 className="text-sm font-semibold text-zinc-900">오시는 길</h2>
-        <p className="mt-2 text-base font-bold text-zinc-900">{venue}</p>
+        <p className="mt-2 text-base font-bold text-zinc-900">
+          {venue} <span className="text-zinc-500">· {hall}</span>
+        </p>
         <p className="text-sm text-zinc-500">{venueDetail}</p>
         <p className="mt-1 text-sm text-rose-500">{WEDDING.dateLabel}</p>
       </div>
