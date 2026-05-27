@@ -1,0 +1,64 @@
+import type { TrainType } from "./types";
+
+// 예식 기본 정보
+export const WEDDING = {
+  dateTime: "2027-05-22T13:30:00+09:00",
+  dateLabel: "2027년 5월 22일 (토) 오후 1시 30분",
+  venue: "부산 아시아드 주경기장",
+  venueDetail: "부산광역시 연제구 월드컵대로 344",
+  // 지도/길찾기 확장용 좌표
+  lat: 35.1909,
+  lng: 129.0589,
+} as const;
+
+// 핵심 예매 오픈일: 운행일(예식일) 1개월 전 07:00
+// KTX·SRT 모두 일반 승차권은 출발 1개월 전 07:00 오픈 (정책 변경 가능성은 직전 재확인)
+export const BOOKING_OPEN = {
+  dateTime: "2027-04-22T07:00:00+09:00",
+  dateLabel: "2027년 4월 22일 (목) 07:00",
+} as const;
+
+// 노선별 서울권/부산권 역
+export const STATIONS: Record<
+  TrainType,
+  { seoulSide: string; busanSide: string }
+> = {
+  SRT: { seoulSide: "수서", busanSide: "부산" },
+  KTX: { seoulSide: "서울역", busanSide: "부산" },
+};
+
+// 4개 관리 노선 (CSV/집계 기준)
+export const ROUTES = [
+  { key: "SRT_DOWN", trainType: "SRT", from: "수서", to: "부산", dir: "DOWN" },
+  { key: "KTX_DOWN", trainType: "KTX", from: "서울역", to: "부산", dir: "DOWN" },
+  { key: "SRT_UP", trainType: "SRT", from: "부산", to: "수서", dir: "UP" },
+  { key: "KTX_UP", trainType: "KTX", from: "부산", to: "서울역", dir: "UP" },
+] as const;
+
+export type RouteKey = (typeof ROUTES)[number]["key"];
+
+// 가는편 출발역(서울권), 도착역(부산)
+export function outboundStations(type: TrainType) {
+  return { from: STATIONS[type].seoulSide, to: STATIONS[type].busanSide };
+}
+
+// 오는편 출발역(부산), 도착역(서울권)
+export function inboundStations(type: TrainType) {
+  return { from: STATIONS[type].busanSide, to: STATIONS[type].seoulSide };
+}
+
+export function weddingDate(): Date {
+  return new Date(WEDDING.dateTime);
+}
+
+export function bookingOpenDate(): Date {
+  return new Date(BOOKING_OPEN.dateTime);
+}
+
+// D-day (일 단위, 미래면 양수). 시간은 KST 자정 기준 비교.
+export function daysUntil(target: Date, from: Date = new Date()): number {
+  const MS = 24 * 60 * 60 * 1000;
+  const a = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+  const b = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  return Math.round((a.getTime() - b.getTime()) / MS);
+}
