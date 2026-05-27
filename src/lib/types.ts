@@ -68,6 +68,27 @@ export interface PublicGuest {
   createdAt: string;
 }
 
+// 하객 본인 조회 결과(이름+연락처 인증). 실명/연락처/메모 없음.
+export interface MyBookingLeg {
+  trainType: TrainType;
+  from: string;
+  to: string;
+  date: string;
+  timeBand: TimeBand;
+  trainNo?: string;
+  exactTime?: string;
+}
+
+export interface MyBooking {
+  displayName: string;
+  status: BookingStatus;
+  partySize: number;
+  outbound: MyBookingLeg;
+  hasReturn: boolean;
+  inbound?: MyBookingLeg;
+  buyDeadline?: string;
+}
+
 // 관리자 수정 가능 항목
 export interface AdminPatch {
   status?: BookingStatus;

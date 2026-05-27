@@ -8,6 +8,7 @@ const NAV = [
   { href: "/", label: "안내" },
   { href: "/apply", label: "탑승 신청" },
   { href: "/status", label: "이동 현황" },
+  { href: "/my", label: "내 탑승정보" },
   { href: "/admin", label: "관리자" },
 ];
 

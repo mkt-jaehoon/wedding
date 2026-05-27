@@ -2,8 +2,8 @@ import { Card } from "./ui";
 import { WEDDING } from "@/lib/wedding";
 
 export function VenueMap() {
-  const { lat, lng, venue, hall, venueDetail } = WEDDING;
-  const q = encodeURIComponent(venue);
+  const { lat, lng, venue, hall, venueDetail, mapQuery } = WEDDING;
+  const q = encodeURIComponent(mapQuery);
   const embed = `https://www.google.com/maps?q=${lat},${lng}&z=16&hl=ko&output=embed`;
   const links = [
     {

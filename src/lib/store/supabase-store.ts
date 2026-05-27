@@ -1,7 +1,7 @@
 import type { AdminPatch, Guest, GuestInput, PublicGuest } from "../types";
 import { maskName } from "../format";
 import { getSupabase } from "../supabase/client";
-import { toPublicGuest } from "../supabase/mappers";
+import { toMyBooking, toPublicGuest } from "../supabase/mappers";
 import { UnauthorizedError, type GuestStore } from "./types";
 
 // 공개/신청은 클라이언트에서 anon 키로 직접(공개 데이터). 관리자는 서버 API 경유(쿠키 세션).
@@ -43,6 +43,15 @@ export const supabaseGuestStore: GuestStore = {
     // .select() 미사용 => RETURNING 없음 => 민감 데이터 회신 없음
     const { error } = await getSupabase().from("guests").insert(row);
     if (error) throw new Error(error.message);
+  },
+
+  async lookupMyBooking(name: string, phone: string) {
+    const { data, error } = await getSupabase().rpc("lookup_my_booking", {
+      p_name: name,
+      p_phone: phone,
+    });
+    if (error) throw new Error(error.message);
+    return ((data as Record<string, unknown>[]) ?? []).map(toMyBooking);
   },
 
   async adminLogin(passcode: string) {

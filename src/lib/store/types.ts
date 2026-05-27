@@ -1,4 +1,4 @@
-import type { AdminPatch, Guest, GuestInput, PublicGuest } from "../types";
+import type { AdminPatch, Guest, GuestInput, MyBooking, PublicGuest } from "../types";
 
 // 데이터 접근 추상화.
 // 공개 경로와 관리자 경로를 분리해 민감 컬럼이 공개 쿼리로 내려가지 않게 한다.
@@ -8,6 +8,8 @@ export interface GuestStore {
   listPublic(): Promise<PublicGuest[]>;
   // 신청(/apply)
   create(input: GuestInput): Promise<void>;
+  // 본인 조회(/my): 이름+연락처 일치 시 본인 탑승정보만
+  lookupMyBooking(name: string, phone: string): Promise<MyBooking[]>;
   // 관리자 인증
   adminLogin(passcode: string): Promise<boolean>;
   adminLogout(): Promise<void>;

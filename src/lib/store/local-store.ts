@@ -89,6 +89,26 @@ export const demoGuestStore: GuestStore = {
     write([...read(), guest]);
   },
 
+  async lookupMyBooking(name: string, phone: string) {
+    const digits = phone.replace(/[^0-9]/g, "");
+    if (digits.length < 7 || !name.trim()) return [];
+    return read()
+      .filter(
+        (g) =>
+          g.name.trim() === name.trim() &&
+          (g.phone ?? "").replace(/[^0-9]/g, "") === digits,
+      )
+      .map((g) => ({
+        displayName: g.displayName,
+        status: g.status,
+        partySize: g.partySize,
+        outbound: { ...g.outbound },
+        hasReturn: g.hasReturn,
+        inbound: g.hasReturn && g.inbound ? { ...g.inbound } : undefined,
+        buyDeadline: undefined,
+      }));
+  },
+
   async adminLogin(passcode: string) {
     const ok = checkPasscode(passcode);
     if (ok) setDemoAuthed(true);

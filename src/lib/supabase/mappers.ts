@@ -1,4 +1,11 @@
-import type { BookingStatus, Guest, PublicGuest, TimeBand, TrainType } from "../types";
+import type {
+  BookingStatus,
+  Guest,
+  MyBooking,
+  PublicGuest,
+  TimeBand,
+  TrainType,
+} from "../types";
 
 // DB(snake_case) row -> 공개 타입(안전 컬럼만)
 export function toPublicGuest(r: Record<string, unknown>): PublicGuest {
@@ -24,6 +31,37 @@ export function toPublicGuest(r: Record<string, unknown>): PublicGuest {
       : undefined,
     publicStatus: r.public_status as BookingStatus,
     createdAt: r.created_at as string,
+  };
+}
+
+// DB(snake_case) row -> 본인 조회 타입(안전 컬럼만)
+export function toMyBooking(r: Record<string, unknown>): MyBooking {
+  return {
+    displayName: r.display_name as string,
+    status: r.status as BookingStatus,
+    partySize: r.party_size as number,
+    outbound: {
+      trainType: r.outbound_train_type as TrainType,
+      from: r.outbound_from as string,
+      to: r.outbound_to as string,
+      date: r.outbound_date as string,
+      timeBand: r.outbound_time_band as TimeBand,
+      trainNo: (r.outbound_train_no as string) ?? undefined,
+      exactTime: (r.outbound_exact_time as string) ?? undefined,
+    },
+    hasReturn: Boolean(r.has_return),
+    inbound: r.has_return
+      ? {
+          trainType: r.inbound_train_type as TrainType,
+          from: r.inbound_from as string,
+          to: r.inbound_to as string,
+          date: r.inbound_date as string,
+          timeBand: r.inbound_time_band as TimeBand,
+          trainNo: (r.inbound_train_no as string) ?? undefined,
+          exactTime: (r.inbound_exact_time as string) ?? undefined,
+        }
+      : undefined,
+    buyDeadline: (r.buy_deadline as string) ?? undefined,
   };
 }
 
